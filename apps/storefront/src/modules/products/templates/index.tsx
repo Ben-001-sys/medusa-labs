@@ -11,6 +11,8 @@ import { notFound } from "next/navigation"
 import { HttpTypes } from "@medusajs/types"
 
 import ProductActionsWrapper from "./product-actions-wrapper"
+import RecentlyViewedTracker from "../../../features/recently-viewed/components/recently-viewed-tracker"
+import RecentlyViewedSection from "../../../features/recently-viewed/components/recently-viewed-section"
 
 type ProductTemplateProps = {
   product: HttpTypes.StoreProduct
@@ -31,6 +33,14 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
 
   return (
     <>
+      <RecentlyViewedTracker
+        product={{
+          id: product.id,
+          handle: product.handle,
+          title: product.title,
+          thumbnail: product.thumbnail,
+        }}
+      />
       <div
         className="content-container  flex flex-col small:flex-row small:items-start py-6 relative"
         data-testid="product-container"
@@ -65,6 +75,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
           <RelatedProducts product={product} countryCode={countryCode} />
         </Suspense>
       </div>
+      <RecentlyViewedSection currentHandle={product.handle ?? ""} />
     </>
   )
 }
