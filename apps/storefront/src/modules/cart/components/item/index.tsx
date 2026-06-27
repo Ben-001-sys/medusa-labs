@@ -33,13 +33,15 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
   const isGift = item.metadata?.is_gift === "true"
   const giftMessage = item.metadata?.gift_message as string
 
-  const [instructions, setInstructions] = useState(
+  const [instructionsUpdating, setInstructionsUpdating] = useState(false)
+  const [newInstructions, setNewInstructions] = useState(
   item.metadata?.package_instructions as string || ""
   )
 
-  const [saving, setSaving] = useState(false)
+  const [isEditingInstructions, setIsEditingInstructions] = useState(false)
 
-  const [editing, setEditing] = useState(false)
+  const isInstructions = item.metadata?.is_instructions === "true"
+  const instructionsMessage = item.metadata?.package_instructions as string
 
   const changeQuantity = async (quantity: number) => {
     setError(null)
@@ -113,22 +115,56 @@ const handleCancelEdit = () => {
   setIsEditingGiftMessage(false)
 }
 
-const handleSaveInstructions = async () => {
-  setSaving(true)
-
+const handleInstructionsToggle = async (checked: boolean) => {
+  setInstructionsUpdating(true)
+  
   try {
+    const newMetadata2 = {
+      is_instructions: checked.toString(),
+      package_instructions: checked ? newInstructions : "",
+    }
+    
     await updateLineItem({
       lineId: item.id,
       quantity: item.quantity,
-      metadata: {
-        package_instructions: instructions,
-      },
+      metadata: newMetadata2,
     })
-
-    setEditing(false)
-  } finally {
-    setSaving(false)
+  } catch (error) {
+    console.error("Error updating instructions status:", error)
+  } finally { 
+    setInstructionsUpdating(false)
   }
+}
+
+const handleSaveInstructions = async () => {
+  setInstructionsUpdating(true)
+  
+  try {
+    const newMetadata2 = {
+      is_instructions: "true",
+      package_instructions: newInstructions,
+    }
+    
+    await updateLineItem({
+      lineId: item.id,
+      quantity: item.quantity,
+      metadata: newMetadata2,
+    })
+    setIsEditingInstructions(false)
+  } catch (error) {
+    console.error("Error updating instructions:", error)
+  } finally {
+    setInstructionsUpdating(false)
+  }
+}
+
+const handleStartEditInstructions = () => {
+  setIsEditingInstructions(true)
+}
+
+const handleCancelEditInstructions = () => {
+  setNewInstructions(instructionsMessage || "")
+  setIsEditingInstructions(false)
 }
 
 return (
@@ -244,6 +280,93 @@ return (
                     className="text-xs px-2 py-1"
                   >
                     {giftMessage ? "Edit" : "Add"}
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Instructions Options */}
+        <div className="mb-3">
+          <div
+            className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-50 rounded-full border hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Checkbox
+              checked={isInstructions}
+              onCheckedChange={handleInstructionsToggle}
+              disabled={instructionsUpdating}
+              className="w-4 h-4"
+              id="is-instructions"
+            />
+            <Label htmlFor="is-instructions">
+              Include Instructions
+            </Label>
+          </div>
+          
+          {isInstructions && (
+            <div className="mt-3">
+              {isEditingInstructions ? (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Text className="text-sm font-medium text-ui-fg-base">
+                      Package Instructions:
+                    </Text>
+                    <Text className="text-xs text-ui-fg-subtle">(optional)</Text>
+                  </div>
+                  <Textarea
+                    placeholder="Add instructions..."
+
+                    value={newInstructions}
+                    onChange={(e) => setNewInstructions(e.target.value)}
+                    disabled={instructionsUpdating}
+                    className="w-full"
+                    rows={2}
+                  />
+                  <div className="flex justify-end gap-2">
+                    <Button
+                      size="small"
+                      variant="secondary"
+                      onClick={handleCancelEditInstructions}
+                      disabled={instructionsUpdating}
+                      className="text-xs px-3 py-1"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      size="small"
+                      variant="primary"
+                      onClick={handleSaveInstructions}
+                      disabled={instructionsUpdating || newInstructions === instructionsMessage}
+                      className="text-xs px-3 py-1"
+                    >
+                      {instructionsUpdating ? <Spinner /> : "Save"}
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Text className="text-sm font-medium text-ui-fg-base">
+                      Instructions:
+                    </Text>
+                    {instructionsMessage ? (
+                      <Text className="text-sm text-ui-fg-subtle">
+                        {instructionsMessage}
+                      </Text>
+                    ) : (
+                      <Text className="text-sm text-ui-fg-subtle italic">
+                        No instructions added
+                      </Text>
+                    )}
+                  </div>
+                  <Button
+                    size="small"
+                    variant="secondary"
+                    onClick={handleStartEditInstructions}
+                    className="text-xs px-2 py-1"
+                  >
+                    {instructionsMessage ? "Edit" : "Add"}
                   </Button>
                 </div>
               )}

@@ -15,6 +15,8 @@ const Item = ({ item, currencyCode }: ItemProps) => {
 
   const isGift = item.metadata?.is_gift === "true"
   const giftMessage = item.metadata?.gift_message as string
+  const isInstructions = item.metadata?.is_instructions === "true"
+  const instructionsMessage = item.metadata?.package_instructions as string
 
   return (
     <Table.Row className="w-full" data-testid="product-row">
@@ -36,6 +38,11 @@ const Item = ({ item, currencyCode }: ItemProps) => {
           className="inline-block txt-medium text-ui-fg-subtle w-full overflow-hidden text-ellipsis"
         >
           Gift Message: {giftMessage || "No gift message provided"}
+        </Text>}
+        {isInstructions && <Text
+          className="inline-block txt-medium text-ui-fg-subtle w-full overflow-hidden text-ellipsis"
+        >
+          Package Instructions: {instructionsMessage || "No package instructions provided"}
         </Text>}
       </Table.Cell>
 
