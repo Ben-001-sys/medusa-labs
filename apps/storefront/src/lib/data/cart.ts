@@ -160,9 +160,11 @@ export async function addToCart({
 export async function updateLineItem({
   lineId,
   quantity,
+  metadata,
 }: {
   lineId: string
   quantity: number
+  metadata?: Record<string, any>
 }) {
   if (!lineId) {
     throw new Error("Missing lineItem ID when updating line item")
@@ -178,8 +180,13 @@ export async function updateLineItem({
     ...(await getAuthHeaders()),
   }
 
+  const updateData: any = { quantity }
+  if (metadata) {
+    updateData.metadata = metadata
+  }
+
   await sdk.store.cart
-    .updateLineItem(cartId, lineId, { quantity }, {}, headers)
+    .updateLineItem(cartId, lineId, updateData, {}, headers)
     .then(async () => {
       const cartCacheTag = await getCacheTag("carts")
       revalidateTag(cartCacheTag)
