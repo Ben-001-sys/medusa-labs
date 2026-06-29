@@ -9,6 +9,7 @@ import BrandModuleService from "../modules/brand/service";
 
 export type CreateBrandStepInput = {
   name: string;
+  handle: string;
 };
 
 export const createBrandStep = createStep(
@@ -31,6 +32,7 @@ export const createBrandStep = createStep(
 
 type CreateBrandWorkflowInput = {
   name: string;
+  handle: string;
 };
 
 export const createBrandWorkflow = createWorkflow(

@@ -10,7 +10,7 @@ import {
 import { z } from "@medusajs/framework/zod"
 import { createFindParams } from "@medusajs/medusa/api/utils/validators"
 import { Modules } from "@medusajs/framework/utils";
-import { PostAdminCreateBrand } from "./admin/brand/validators";
+import { PostAdminCreateBrand, PutAdminUpdateBrand } from "./admin/brands/validators";
 
 
 export const GetBrandsSchema = createFindParams()
@@ -23,6 +23,11 @@ export default defineMiddlewares({
       middlewares: [
         validateAndTransformBody(PostAdminCreateBrand),
       ],
+    },
+    {
+      matcher: "/admin/brands/:id",
+      method: "PUT",
+      middlewares: [validateAndTransformBody(PutAdminUpdateBrand)],
     },
     {
       matcher: "/admin/products",
@@ -41,6 +46,7 @@ export default defineMiddlewares({
             defaults: [
               "id",
               "name",
+              "handle",
               "products.*",
             ],
             isList: true,

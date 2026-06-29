@@ -38,6 +38,22 @@
           "enumItems": [],
           "mappedType": "text"
         },
+        "handle": {
+          "name": "handle",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "text"
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamptz",
@@ -90,6 +106,15 @@
       "name": "brand",
       "schema": "public",
       "indexes": [
+        {
+          "keyName": "IDX_brand_handle_unique",
+          "columnNames": [],
+          "composite": false,
+          "constraint": false,
+          "primary": false,
+          "unique": false,
+          "expression": "CREATE UNIQUE INDEX IF NOT EXISTS \"IDX_brand_handle_unique\" ON \"brand\" (\"handle\") WHERE deleted_at IS NULL"
+        },
         {
           "keyName": "IDX_brand_deleted_at",
           "columnNames": [],
