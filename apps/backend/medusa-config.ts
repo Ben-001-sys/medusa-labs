@@ -153,4 +153,8 @@ module.exports = defineConfig({
   // featureFlags: {
   //   caching: true,
   // },
+    {
+      resolve: "./src/modules/brand"
+    }
+  ]
 })
