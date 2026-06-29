@@ -13,7 +13,7 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 import Spinner from "@modules/common/icons/spinner"
 import Thumbnail from "@modules/products/components/thumbnail"
 import { useState } from "react"
-
+import { Checkbox, Textarea, Button, Label } from "@medusajs/ui"
 type ItemProps = {
   item: HttpTypes.StoreCartLineItem
   type?: "full" | "preview"
@@ -23,6 +23,25 @@ type ItemProps = {
 const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
   const [updating, setUpdating] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  const [giftUpdating, setGiftUpdating] = useState(false)
+  const [newGiftMessage, setNewGiftMessage] = useState(
+    item.metadata?.gift_message as string || ""
+  )
+  const [isEditingGiftMessage, setIsEditingGiftMessage] = useState(false)
+
+  const isGift = item.metadata?.is_gift === "true"
+  const giftMessage = item.metadata?.gift_message as string
+
+  const [instructionsUpdating, setInstructionsUpdating] = useState(false)
+  const [newInstructions, setNewInstructions] = useState(
+  item.metadata?.package_instructions as string || ""
+  )
+
+  const [isEditingInstructions, setIsEditingInstructions] = useState(false)
+
+  const isInstructions = item.metadata?.is_instructions === "true"
+  const instructionsMessage = item.metadata?.package_instructions as string
 
   const changeQuantity = async (quantity: number) => {
     setError(null)
@@ -44,14 +63,120 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
   const maxQtyFromInventory = 10
   const maxQuantity = item.variant?.manage_inventory ? 10 : maxQtyFromInventory
 
-  return (
-    <Table.Row className="w-full" data-testid="product-row">
-      <Table.Cell className="!pl-0 p-4 w-24">
+const handleGiftToggle = async (checked: boolean) => {
+  setGiftUpdating(true)
+  
+  try {
+    const newMetadata = {
+      is_gift: checked.toString(),
+      gift_message: checked ? newGiftMessage : "",
+    }
+    
+    await updateLineItem({
+      lineId: item.id,
+      quantity: item.quantity,
+      metadata: newMetadata,
+    })
+  } catch (error) {
+    console.error("Error updating gift status:", error)
+  } finally {
+    setGiftUpdating(false)
+  }
+}
+
+const handleSaveGiftMessage = async () => {
+  setGiftUpdating(true)
+  
+  try {
+    const newMetadata = {
+      is_gift: "true",
+      gift_message: newGiftMessage,
+    }
+    
+    await updateLineItem({
+      lineId: item.id,
+      quantity: item.quantity,
+      metadata: newMetadata,
+    })
+    setIsEditingGiftMessage(false)
+  } catch (error) {
+    console.error("Error updating gift message:", error)
+  } finally {
+    setGiftUpdating(false)
+  }
+}
+
+const handleStartEdit = () => {
+  setIsEditingGiftMessage(true)
+}
+
+const handleCancelEdit = () => {
+  setNewGiftMessage(giftMessage || "")
+  setIsEditingGiftMessage(false)
+}
+
+const handleInstructionsToggle = async (checked: boolean) => {
+  setInstructionsUpdating(true)
+  
+  try {
+    const newMetadata2 = {
+      is_instructions: checked.toString(),
+      package_instructions: checked ? newInstructions : "",
+    }
+    
+    await updateLineItem({
+      lineId: item.id,
+      quantity: item.quantity,
+      metadata: newMetadata2,
+    })
+  } catch (error) {
+    console.error("Error updating instructions status:", error)
+  } finally { 
+    setInstructionsUpdating(false)
+  }
+}
+
+const handleSaveInstructions = async () => {
+  setInstructionsUpdating(true)
+  
+  try {
+    const newMetadata2 = {
+      is_instructions: "true",
+      package_instructions: newInstructions,
+    }
+    
+    await updateLineItem({
+      lineId: item.id,
+      quantity: item.quantity,
+      metadata: newMetadata2,
+    })
+    setIsEditingInstructions(false)
+  } catch (error) {
+    console.error("Error updating instructions:", error)
+  } finally {
+    setInstructionsUpdating(false)
+  }
+}
+
+const handleStartEditInstructions = () => {
+  setIsEditingInstructions(true)
+}
+
+const handleCancelEditInstructions = () => {
+  setNewInstructions(instructionsMessage || "")
+  setIsEditingInstructions(false)
+}
+
+return (
+  <div className="bg-white border border-gray-200 rounded-lg p-4">
+    <div className="flex gap-4">
+      {/* Product Image */}
+      <div className="flex-shrink-0">
         <LocalizedClientLink
           href={`/products/${item.product_handle}`}
           className={clx("flex", {
             "w-16": type === "preview",
-            "small:w-24 w-12": type === "full",
+            "w-20": type === "full",
           })}
         >
           <Thumbnail
@@ -60,85 +185,242 @@ const Item = ({ item, type = "full", currencyCode }: ItemProps) => {
             size="square"
           />
         </LocalizedClientLink>
-      </Table.Cell>
+      </div>
 
-      <Table.Cell className="text-left">
-        <Text
-          className="txt-medium-plus text-ui-fg-base"
-          data-testid="product-title"
-        >
-          {item.product_title}
-        </Text>
-        <LineItemOptions variant={item.variant} data-testid="product-variant" />
-      </Table.Cell>
-
-      {type === "full" && (
-        <Table.Cell>
-          <div className="flex gap-2 items-center w-28">
-            <DeleteButton id={item.id} data-testid="product-delete-button" />
-            <CartItemSelect
-              value={item.quantity}
-              onChange={(value) => changeQuantity(parseInt(value.target.value))}
-              className="w-14 h-10 p-4"
-              data-testid="product-select-button"
+      {/* Product Details */}
+      <div className="flex-1 min-w-0">
+        <div className="flex justify-between items-start mb-2">
+          <div className="flex-1 min-w-0">
+            <Text
+              className="txt-medium-plus text-ui-fg-base truncate"
+              data-testid="product-title"
             >
-              {/* TODO: Update this with the v2 way of managing inventory */}
-              {Array.from(
-                {
-                  length: Math.min(maxQuantity, 10),
-                },
-                (_, i) => (
-                  <option value={i + 1} key={i}>
-                    {i + 1}
-                  </option>
-                )
-              )}
-
-              <option value={1} key={1}>
-                1
-              </option>
-            </CartItemSelect>
-            {updating && <Spinner />}
+              {item.product_title}
+            </Text>
+            <LineItemOptions variant={item.variant} data-testid="product-variant" />
           </div>
-          <ErrorMessage error={error} data-testid="product-error-message" />
-        </Table.Cell>
-      )}
+        </div>
 
-      {type === "full" && (
-        <Table.Cell className="hidden small:table-cell">
-          <LineItemUnitPrice
-            item={item}
-            style="tight"
-            currencyCode={currencyCode}
-          />
-        </Table.Cell>
-      )}
-
-      <Table.Cell className="!pr-0">
-        <span
-          className={clx("!pr-0", {
-            "flex flex-col items-end h-full justify-center": type === "preview",
-          })}
-        >
-          {type === "preview" && (
-            <span className="flex gap-x-1 ">
-              <Text className="text-ui-fg-muted">{item.quantity}x </Text>
-              <LineItemUnitPrice
-                item={item}
-                style="tight"
-                currencyCode={currencyCode}
-              />
-            </span>
+        {/* Gift Options */}
+        <div className="mb-3">
+          <div
+            className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-50 rounded-full border hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Checkbox
+              checked={isGift}
+              onCheckedChange={handleGiftToggle}
+              disabled={giftUpdating}
+              className="w-4 h-4"
+              id="is-gift"
+            />
+            <Label htmlFor="is-gift">
+              This is a gift
+            </Label>
+          </div>
+          
+          {isGift && (
+            <div className="mt-3">
+              {isEditingGiftMessage ? (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Text className="text-sm font-medium text-ui-fg-base">
+                      Gift Message:
+                    </Text>
+                    <Text className="text-xs text-ui-fg-subtle">(optional)</Text>
+                  </div>
+                  <Textarea
+                    placeholder="Add a personal message..."
+                    value={newGiftMessage}
+                    onChange={(e) => setNewGiftMessage(e.target.value)}
+                    disabled={giftUpdating}
+                    className="w-full"
+                    rows={2}
+                  />
+                  <div className="flex justify-end gap-2">
+                    <Button
+                      size="small"
+                      variant="secondary"
+                      onClick={handleCancelEdit}
+                      disabled={giftUpdating}
+                      className="text-xs px-3 py-1"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      size="small"
+                      variant="primary"
+                      onClick={handleSaveGiftMessage}
+                      disabled={giftUpdating || newGiftMessage === giftMessage}
+                      className="text-xs px-3 py-1"
+                    >
+                      {giftUpdating ? <Spinner /> : "Save"}
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Text className="text-sm font-medium text-ui-fg-base">
+                      Gift Message:
+                    </Text>
+                    {giftMessage ? (
+                      <Text className="text-sm text-ui-fg-subtle">
+                        {giftMessage}
+                      </Text>
+                    ) : (
+                      <Text className="text-sm text-ui-fg-subtle italic">
+                        No message added
+                      </Text>
+                    )}
+                  </div>
+                  <Button
+                    size="small"
+                    variant="secondary"
+                    onClick={handleStartEdit}
+                    className="text-xs px-2 py-1"
+                  >
+                    {giftMessage ? "Edit" : "Add"}
+                  </Button>
+                </div>
+              )}
+            </div>
           )}
-          <LineItemPrice
-            item={item}
-            style="tight"
-            currencyCode={currencyCode}
-          />
-        </span>
-      </Table.Cell>
-    </Table.Row>
-  )
+        </div>
+
+        {/* Instructions Options */}
+        <div className="mb-3">
+          <div
+            className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-50 rounded-full border hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Checkbox
+              checked={isInstructions}
+              onCheckedChange={handleInstructionsToggle}
+              disabled={instructionsUpdating}
+              className="w-4 h-4"
+              id="is-instructions"
+            />
+            <Label htmlFor="is-instructions">
+              Include Instructions
+            </Label>
+          </div>
+          
+          {isInstructions && (
+            <div className="mt-3">
+              {isEditingInstructions ? (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Text className="text-sm font-medium text-ui-fg-base">
+                      Package Instructions:
+                    </Text>
+                    <Text className="text-xs text-ui-fg-subtle">(optional)</Text>
+                  </div>
+                  <Textarea
+                    placeholder="Add instructions..."
+
+                    value={newInstructions}
+                    onChange={(e) => setNewInstructions(e.target.value)}
+                    disabled={instructionsUpdating}
+                    className="w-full"
+                    rows={2}
+                  />
+                  <div className="flex justify-end gap-2">
+                    <Button
+                      size="small"
+                      variant="secondary"
+                      onClick={handleCancelEditInstructions}
+                      disabled={instructionsUpdating}
+                      className="text-xs px-3 py-1"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      size="small"
+                      variant="primary"
+                      onClick={handleSaveInstructions}
+                      disabled={instructionsUpdating || newInstructions === instructionsMessage}
+                      className="text-xs px-3 py-1"
+                    >
+                      {instructionsUpdating ? <Spinner /> : "Save"}
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Text className="text-sm font-medium text-ui-fg-base">
+                      Instructions:
+                    </Text>
+                    {instructionsMessage ? (
+                      <Text className="text-sm text-ui-fg-subtle">
+                        {instructionsMessage}
+                      </Text>
+                    ) : (
+                      <Text className="text-sm text-ui-fg-subtle italic">
+                        No instructions added
+                      </Text>
+                    )}
+                  </div>
+                  <Button
+                    size="small"
+                    variant="secondary"
+                    onClick={handleStartEditInstructions}
+                    className="text-xs px-2 py-1"
+                  >
+                    {instructionsMessage ? "Edit" : "Add"}
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Quantity and Actions */}
+        {type === "full" && (
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <DeleteButton id={item.id} data-testid="product-delete-button" />
+              <CartItemSelect
+                value={item.quantity}
+                onChange={(value) => changeQuantity(parseInt(value.target.value))}
+                className="w-16 h-8 p-2"
+                data-testid="product-select-button"
+              >
+                {/* TODO: Update this with the v2 way of managing inventory */}
+                {Array.from(
+                  {
+                    length: Math.min(maxQuantity, 10),
+                  },
+                  (_, i) => (
+                    <option value={i + 1} key={i}>
+                      {i + 1}
+                    </option>
+                  )
+                )}
+              </CartItemSelect>
+              {updating && <Spinner />}
+            </div>
+          </div>
+        )}
+
+        {/* Preview Mode */}
+        {type === "preview" && (
+          <div className="flex items-center justify-between">
+            <Text className="text-sm text-ui-fg-subtle">
+              Qty: {item.quantity}
+            </Text>
+            <LineItemUnitPrice
+              item={item}
+              style="tight"
+              currencyCode={currencyCode}
+            />
+          </div>
+        )}
+
+        <ErrorMessage error={error} data-testid="product-error-message" />
+      </div>
+    </div>
+  </div>
+)
 }
 
 export default Item
