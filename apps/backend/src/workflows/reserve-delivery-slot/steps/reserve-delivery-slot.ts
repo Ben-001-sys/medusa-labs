@@ -17,13 +17,27 @@ export type ReserveDeliverySlotStepInput = {
   slot_id: string
 }
 
-export const reserveDeliverySlotStep = createStep(
+type ReserveDeliverySlotStepOutput = {
+  reservation: any // Replace with your DeliverySlotReservation model type if available
+  already_reserved: boolean
+}
+
+type ReserveDeliverySlotStepCompensation = {
+  reservation_id: string
+}
+
+export const reserveDeliverySlotStep = createStep<
+  ReserveDeliverySlotStepInput,
+  ReserveDeliverySlotStepOutput,
+  ReserveDeliverySlotStepCompensation
+>(
   "reserve-delivery-slot",
   async (
-    { cart_id, customer_id, slot_id }: ReserveDeliverySlotStepInput,
+    { cart_id, customer_id, slot_id },
     { container }
   ) => {
     const cartModuleService = container.resolve(Modules.CART)
+
     const deliverySlotService =
       container.resolve<DeliverySlotModuleService>(DELIVERY_SLOT_MODULE)
 
@@ -119,7 +133,10 @@ export const reserveDeliverySlotStep = createStep(
     )
   },
 
-  async (compensationData, { container }) => {
+  async (
+    compensationData: ReserveDeliverySlotStepCompensation | undefined,
+    { container }
+  ) => {
     if (!compensationData?.reservation_id) {
       return
     }
