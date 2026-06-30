@@ -11,6 +11,7 @@ import { z } from "@medusajs/framework/zod"
 import { createFindParams } from "@medusajs/medusa/api/utils/validators"
 import { Modules } from "@medusajs/framework/utils";
 import { PostAdminCreateBrand, PutAdminUpdateBrand } from "./admin/brands/validators";
+import { PostSelectDeliverySlot } from "./store/customers/me/carts/[id]/delivery-slot/validators";
 
 
 export const GetBrandsSchema = createFindParams()
@@ -52,6 +53,13 @@ export default defineMiddlewares({
             isList: true,
           }
         ),
+      ],
+    },
+    {
+      matcher: "/store/customers/me/carts/:id/delivery-slot",
+      methods: ["POST"],
+      middlewares: [
+        validateAndTransformBody(PostSelectDeliverySlot),
       ],
     },
   ],
