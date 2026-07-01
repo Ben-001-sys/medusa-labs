@@ -11,6 +11,7 @@ import {
 
 import {
   expireDeliverySlotReservationStep,
+  type ExpireReservationOutput,
 } from "./steps/expire-delivery-slot-reservation"
 
 type ExpireDeliverySlotReservationWorkflowInput = {
@@ -30,6 +31,7 @@ export const expireDeliverySlotReservationWorkflow = createWorkflow(
       return `delivery-slot:${input.slot_id}`
     })
 
+    // Uncomment if/when cart locking is required.
     // acquireLockStep({
     //   key: cartLockKey,
     //   timeout: 2,
@@ -50,10 +52,11 @@ export const expireDeliverySlotReservationWorkflow = createWorkflow(
       key: slotLockKey,
     })
 
+    // Uncomment if/when cart locking is enabled.
     // releaseLockStep({
     //   key: cartLockKey,
     // })
 
-    return new WorkflowResponse(result)
+    return new WorkflowResponse<ExpireReservationOutput>(result)
   }
 )
