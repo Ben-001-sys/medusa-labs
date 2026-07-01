@@ -18,6 +18,8 @@ export const DeliverySlotReservation = model
 
     expires_at: model.dateTime().index(),
 
+    expired_at: model.dateTime().index().nullable(),
+
     slot: model.belongsTo(() => DeliverySlot, {
       mappedBy: "reservations",
     }),
