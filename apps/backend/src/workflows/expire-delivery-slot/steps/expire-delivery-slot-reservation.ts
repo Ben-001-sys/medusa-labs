@@ -13,13 +13,36 @@ export type ExpireDeliverySlotReservationStepInput = {
   reservation_id: string
 }
 
+export type ExpireReservationOutput = {
+  reservation_id: string
+  expired: boolean
+  reason:
+    | "not_found"
+    | "not_active"
+    | "not_yet_expired"
+    | null
+}
+
+type CompensationInput = {
+  reservation_id: string
+}
+
 export const expireDeliverySlotReservationStep = createStep(
   "expire-delivery-slot-reservation",
-  async ({ reservation_id }: ExpireDeliverySlotReservationStepInput, {
-    container,
-  }) => {
+
+  async (
+    { reservation_id }: ExpireDeliverySlotReservationStepInput,
+    { container }
+  ): Promise<
+    StepResponse<
+      ExpireReservationOutput,
+      CompensationInput
+    >
+  > => {
     const deliverySlotService =
-      container.resolve<DeliverySlotModuleService>(DELIVERY_SLOT_MODULE)
+      container.resolve<DeliverySlotModuleService>(
+        DELIVERY_SLOT_MODULE
+      )
 
     const reservations =
       await deliverySlotService.listDeliverySlotReservations({
@@ -30,15 +53,24 @@ export const expireDeliverySlotReservationStep = createStep(
 
     // The reservation may have been removed or changed after the job found it.
     if (!reservation) {
-      return new StepResponse({
+      return new StepResponse<
+        ExpireReservationOutput,
+        CompensationInput
+      >({
         reservation_id,
         expired: false,
         reason: "not_found",
       })
     }
 
-    if (reservation.status !== DeliverySlotReservationStatus.ACTIVE) {
-      return new StepResponse({
+    if (
+      reservation.status !==
+      DeliverySlotReservationStatus.ACTIVE
+    ) {
+      return new StepResponse<
+        ExpireReservationOutput,
+        CompensationInput
+      >({
         reservation_id,
         expired: false,
         reason: "not_active",
@@ -48,24 +80,30 @@ export const expireDeliverySlotReservationStep = createStep(
     const now = new Date()
 
     if (new Date(reservation.expires_at) > now) {
-      return new StepResponse({
+      return new StepResponse<
+        ExpireReservationOutput,
+        CompensationInput
+      >({
         reservation_id,
         expired: false,
         reason: "not_yet_expired",
       })
     }
 
-    const updatedReservation =
-      await deliverySlotService.updateDeliverySlotReservations({
-        id: reservation.id,
-        status: DeliverySlotReservationStatus.EXPIRED,
-        expired_at: now,
-      })
+    await deliverySlotService.updateDeliverySlotReservations({
+      id: reservation.id,
+      status: DeliverySlotReservationStatus.EXPIRED,
+      expired_at: now,
+    })
 
-    return new StepResponse(
+    return new StepResponse<
+      ExpireReservationOutput,
+      CompensationInput
+    >(
       {
-        reservation: updatedReservation,
+        reservation_id: reservation.id,
         expired: true,
+        reason: null,
       },
       {
         reservation_id: reservation.id,
@@ -79,10 +117,11 @@ export const expireDeliverySlotReservationStep = createStep(
     }
 
     const deliverySlotService =
-      container.resolve<DeliverySlotModuleService>(DELIVERY_SLOT_MODULE)
+      container.resolve<DeliverySlotModuleService>(
+        DELIVERY_SLOT_MODULE
+      )
 
-    // In this lab, compensation restores the hold only if a later workflow
-    // step fails before the workflow completes.
+    // Restore the reservation if a later workflow step fails.
     await deliverySlotService.updateDeliverySlotReservations({
       id: compensationData.reservation_id,
       status: DeliverySlotReservationStatus.ACTIVE,
