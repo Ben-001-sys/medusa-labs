@@ -23,3 +23,21 @@ This is a temporary delivery-capacity hold, not final dispatch or fulfillment.
 - Validate reservation during cart completion.
 - Convert confirmed reservation to an order appointment.
 - Send confirmed appointments to Alicide/TMS.
+
+## Expiry and repair
+
+Active reservations expire after 15 minutes.
+
+A scheduled job:
+1. Finds active reservations whose expires_at is in the past.
+2. Re-checks each candidate inside cart and slot locks.
+3. Marks valid candidates as expired.
+4. Retains history.
+5. Makes the slot available for future reservations.
+
+## Operational rule
+
+The expiry job is a repair mechanism.
+
+The checkout flow must later revalidate an active reservation before order
+completion and convert it into a confirmed delivery appointment.
