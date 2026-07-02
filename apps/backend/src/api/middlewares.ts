@@ -12,7 +12,9 @@ import { createFindParams } from "@medusajs/medusa/api/utils/validators"
 import { Modules } from "@medusajs/framework/utils";
 import { PostAdminCreateBrand, PutAdminUpdateBrand } from "./admin/brands/validators";
 import { PostSelectDeliverySlot } from "./store/customers/me/carts/[id]/delivery-slot/validators";
-
+import {
+  PimProductRevisionSchema,
+} from "../modules/pim-connector/contracts"
 
 export const GetBrandsSchema = createFindParams()
 
@@ -60,6 +62,13 @@ export default defineMiddlewares({
       methods: ["POST"],
       middlewares: [
         validateAndTransformBody(PostSelectDeliverySlot),
+      ],
+    },
+    {
+      matcher: "/integrations/pim/product-revisions",
+      method: ["POST"],
+      middlewares: [
+        validateAndTransformBody(PimProductRevisionSchema),
       ],
     },
   ],

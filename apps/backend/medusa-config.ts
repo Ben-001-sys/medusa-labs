@@ -66,6 +66,9 @@ module.exports = defineConfig({
         ],
       },
     },
+    {
+      resolve: "./src/modules/pim-connector",
+    },
   ],
   // featureFlags: {
   //   caching: true,
