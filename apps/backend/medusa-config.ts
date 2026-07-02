@@ -41,12 +41,12 @@ module.exports = defineConfig({
     {
       resolve: "./src/modules/brand"
     },
-// {
-//   resolve: "@medusajs/medusa/event-bus-redis",
-//   options: {
-//     redisUrl: process.env.EVENTS_REDIS_URL,
-//   },
-// },
+  // {
+  //   resolve: "@medusajs/medusa/event-bus-redis",
+  //   options: {
+  //     redisUrl: process.env.EVENTS_REDIS_URL,
+  //   },
+  // },
  {
       resolve: "./src/modules/delivery-slot",
     },
@@ -63,8 +63,21 @@ module.exports = defineConfig({
               from: process.env.RESEND_FROM_EMAIL,
             },
           },
+          // {
+          //   resolve: "@medusajs/medusa/notification-local",
+          //   id: "local",
+          //   options: {
+          //     channels: ["email", "feed"],
+          //   },
+          // }
         ],
       },
+    },
+    {
+      resolve: "./src/modules/pim-connector",
+    },
+    {
+      resolve: "./src/modules/restock",
     },
   ],
   // featureFlags: {
