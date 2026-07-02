@@ -30,7 +30,8 @@
     "node_modules",
     ".medusa/server",
     ".medusa/admin",
+    "src/admin",
     ".cache",
-    "eslint.config.*",
+    "eslint.config.*"
   ]
 }
