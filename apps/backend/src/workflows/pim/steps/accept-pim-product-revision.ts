@@ -22,6 +22,32 @@ type Input = PimProductRevision & {
   payload_hash: string
 }
 
+type AcceptPimProductRevisionStepOutput =
+  | {
+      action: "duplicate"
+      receipt_id: string
+      source: string
+      external_product_id: string
+    }
+  | {
+      action: "accepted"
+      receipt_id: string
+      source: string
+      external_product_id: string
+    }
+  | {
+      action: "stale"
+      receipt_id: string
+      source: string
+      external_product_id: string
+    }
+  | {
+      action: "conflict"
+      receipt_id: string
+      source: string
+      external_product_id: string
+    }
+
 function isUniqueViolation(error: unknown) {
   return (
     typeof error === "object" &&
@@ -31,7 +57,11 @@ function isUniqueViolation(error: unknown) {
   )
 }
 
-export const acceptPimProductRevisionStep = createStep(
+export const acceptPimProductRevisionStep = createStep<
+  Input,
+  AcceptPimProductRevisionStepOutput,
+  undefined
+>(
   "accept-pim-product-revision",
   async (input: Input, { container }) => {
     const connector =
@@ -73,8 +103,21 @@ export const acceptPimProductRevisionStep = createStep(
       })
     } catch (error) {
       if (isUniqueViolation(error)) {
+        const [existingReceiptWithViolation] =
+          existingReceipt.length > 0
+            ? existingReceipt
+            : await connector.listPimEventReceipts({
+                source: input.source,
+                event_id: input.event_id,
+              })
+
+        if (!existingReceiptWithViolation) {
+          throw error
+        }
+
         return new StepResponse({
           action: "duplicate",
+          receipt_id: existingReceiptWithViolation.id,
           source: input.source,
           external_product_id: input.product.external_id,
         })

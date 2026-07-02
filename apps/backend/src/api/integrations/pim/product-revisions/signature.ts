@@ -33,10 +33,14 @@ function readHeader(
   return Array.isArray(value) ? value[0] : value
 }
 
+type PimSignatureVerifyResult =
+  | { valid: true; payload_hash: string }
+  | { valid: false; reason: string }
+
 export function verifyPimSignature(
   headers: Record<string, string | string[] | undefined>,
   body: PimProductRevision
-) {
+): PimSignatureVerifyResult {
   const secret = process.env.PIM_WEBHOOK_SECRET
 
   if (!secret) {

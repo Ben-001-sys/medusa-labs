@@ -109,27 +109,16 @@ export const applyPimProductProjectionStep = createStep(
       last_attempted_at: now,
     })
 
-    const shippingProfileId =
-      process.env.PIM_DEFAULT_SHIPPING_PROFILE_ID
-
-    if (!shippingProfileId) {
-      throw new Error(
-        "PIM_DEFAULT_SHIPPING_PROFILE_ID is not configured."
-      )
-    }
-
     let createdProductId: string | undefined
 
     try {
       let medusaProductId = sync.medusa_product_id
 
       if (medusaProductId) {
-        await productModuleService.updateProducts({
-          id: medusaProductId,
+        await productModuleService.updateProducts(medusaProductId, {
           title: payload.product.title,
           handle: payload.product.handle,
           description: payload.product.description ?? null,
-
           // PIM may signal readiness, but this connector never auto-publishes.
           status: "draft",
         })
@@ -139,7 +128,6 @@ export const applyPimProductProjectionStep = createStep(
           handle: payload.product.handle,
           description: payload.product.description ?? null,
           status: "draft",
-          shipping_profile_id: shippingProfileId,
           options: [
             {
               title: "Default option",
@@ -177,9 +165,9 @@ export const applyPimProductProjectionStep = createStep(
       })
     } catch (error) {
       if (createdProductId) {
-        await productModuleService.deleteProducts(
-          createdProductId
-        )
+        await productModuleService.deleteProducts([
+          createdProductId,
+        ])
       }
 
       const message =
