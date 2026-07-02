@@ -73,9 +73,9 @@ module.exports = defineConfig({
         ],
       },
     },
-    {
-      resolve: "./src/modules/pim-connector",
-    },
+    // {
+    //   resolve: "./src/modules/pim-connector",
+    // },
     {
       resolve: "./src/modules/restock",
     },
