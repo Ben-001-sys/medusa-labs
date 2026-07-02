@@ -15,6 +15,9 @@ import { PostSelectDeliverySlot } from "./store/customers/me/carts/[id]/delivery
 import {
   PimProductRevisionSchema,
 } from "../modules/pim-connector/contracts"
+import { 
+  PostStoreCreateRestockSubscription,
+} from "./store/restock-subscriptions/validators"
 
 export const GetBrandsSchema = createFindParams()
 
@@ -69,6 +72,16 @@ export default defineMiddlewares({
       method: ["POST"],
       middlewares: [
         validateAndTransformBody(PimProductRevisionSchema),
+      ],
+    },
+    {
+      matcher: "/store/restock-subscriptions",
+      method: "POST",
+      middlewares: [
+        authenticate("customer", ["bearer", "session"], {
+          allowUnauthenticated: true,
+        }),
+        validateAndTransformBody(PostStoreCreateRestockSubscription),
       ],
     },
   ],
