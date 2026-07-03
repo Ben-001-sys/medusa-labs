@@ -1,16 +1,24 @@
-import { loadEnv, defineConfig } from '@medusajs/framework/utils'
+import { loadEnv, defineConfig } from "@medusajs/framework/utils";
 
-loadEnv(process.env.NODE_ENV || 'development', process.cwd())
+loadEnv(process.env.NODE_ENV || "development", process.cwd());
+
+/**
+ * Required environment variables for Resend notification provider:
+ * - RESEND_API_KEY: API key for Resend (keep secret, do NOT commit)
+ * - RESEND_FROM_EMAIL: Sender email address used for outgoing messages
+ */
 
 module.exports = defineConfig({
-
   admin: {
     disable: process.env.DISABLE_MEDUSA_ADMIN === "true",
     backendUrl: process.env.MEDUSA_BACKEND_URL,
   },
 
   projectConfig: {
-    workerMode: process.env.MEDUSA_WORKER_MODE as "shared" | "worker" | "server",
+    workerMode: process.env.MEDUSA_WORKER_MODE as
+      | "shared"
+      | "worker"
+      | "server",
     databaseUrl: process.env.DATABASE_URL,
     redisUrl: process.env.REDIS_URL,
     http: {
@@ -19,7 +27,7 @@ module.exports = defineConfig({
       authCors: process.env.AUTH_CORS!,
       jwtSecret: process.env.JWT_SECRET,
       cookieSecret: process.env.COOKIE_SECRET,
-    }
+    },
   },
 
   modules: [
@@ -39,24 +47,25 @@ module.exports = defineConfig({
       },
     },
     {
-      resolve: "./src/modules/brand"
+      resolve: "./src/modules/brand",
     },
-  // {
-  //   resolve: "@medusajs/medusa/event-bus-redis",
-  //   options: {
-  //     redisUrl: process.env.EVENTS_REDIS_URL,
-  //   },
-  // },
- {
+    // {
+    //   resolve: "@medusajs/medusa/event-bus-redis",
+    //   options: {
+    //     redisUrl: process.env.EVENTS_REDIS_URL,
+    //   },
+    // },
+    {
       resolve: "./src/modules/delivery-slot",
     },
-        {
+    {
       resolve: "@medusajs/medusa/notification",
       options: {
         providers: [
           {
             resolve: "./src/modules/resend",
             id: "resend",
+            is_default: true,
             options: {
               channels: ["email"],
               api_key: process.env.RESEND_API_KEY,
@@ -83,4 +92,4 @@ module.exports = defineConfig({
   // featureFlags: {
   //   caching: true,
   // },
-})
+});
