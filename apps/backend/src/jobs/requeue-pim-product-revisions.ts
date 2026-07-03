@@ -88,6 +88,6 @@ export default async function requeuePimProductRevisions(
 export const config = {
   name: "requeue-pim-product-revisions",
   schedule: {
-    interval: 300_000,
+    interval: 3_000_000,
   },
 }
