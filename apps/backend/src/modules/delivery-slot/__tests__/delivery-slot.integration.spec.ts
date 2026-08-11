@@ -120,7 +120,7 @@ medusaIntegrationTestRunner({
           container.resolve<DeliverySlotModuleService>(DELIVERY_SLOT_MODULE);
         const slot = await service.createDeliverySlots(makeSlotPayload("full"));
 
-        await service.createDeliverySlotReservations({
+        const reservationOne = await service.createDeliverySlotReservations({
           cart_id: "cart-one",
           customer_id: "customer-one",
           slot_id: slot.id,
@@ -128,7 +128,7 @@ medusaIntegrationTestRunner({
           expires_at: new Date(Date.now() + 15 * 60 * 1000),
         });
 
-        await service.createDeliverySlotReservations({
+        const reservationTwo = await service.createDeliverySlotReservations({
           cart_id: "cart-two",
           customer_id: "customer-two",
           slot_id: slot.id,
@@ -147,6 +147,8 @@ medusaIntegrationTestRunner({
 
         expect(errors.length).toBeGreaterThan(0);
 
+        await service.deleteDeliverySlotReservations(reservationOne.id);
+        await service.deleteDeliverySlotReservations(reservationTwo.id);
         await service.deleteDeliverySlots(slot.id);
       });
 
