@@ -60,6 +60,9 @@ module.exports = defineConfig({
       resolve: "./src/modules/delivery-slot",
     },
     {
+  resolve: "./src/modules/b2b-organization",
+    },
+    {
       resolve: "@medusajs/medusa/notification",
       options: {
         providers: [

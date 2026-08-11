@@ -18,6 +18,9 @@ import {
 import { 
   PostStoreCreateRestockSubscription,
 } from "./store/restock-subscriptions/validators"
+import {
+  PostSelectB2BOrganization,
+} from "./store/customers/me/b2b/carts/[id]/organization/validators"
 
 export const GetBrandsSchema = createFindParams()
 
@@ -82,6 +85,16 @@ export default defineMiddlewares({
           allowUnauthenticated: true,
         }),
         validateAndTransformBody(PostStoreCreateRestockSubscription),
+      ],
+    },
+    {
+      matcher:
+        "/store/customers/me/b2b/carts/:id/organization",
+      method: ["POST"],
+      middlewares: [
+        validateAndTransformBody(
+          PostSelectB2BOrganization
+        ),
       ],
     },
   ],
