@@ -4,6 +4,7 @@ import {
   createWorkflow,
   WorkflowResponse,
 } from "@medusajs/framework/workflows-sdk";
+import { MedusaError } from "@medusajs/framework/utils";
 import { BRAND_MODULE } from "../modules/brand";
 import BrandModuleService from "../modules/brand/service";
 
@@ -13,16 +14,33 @@ export type CreateBrandStepInput = {
 };
 
 export const createBrandStep = createStep(
-  "create-brand-step",
+  "create-brand",
   async (input: CreateBrandStepInput, { container }) => {
     const brandModuleService: BrandModuleService =
       container.resolve(BRAND_MODULE);
 
-    const brand = await brandModuleService.createBrands(input);
+    const name = input?.name?.trim();
+    const handle = input?.handle?.trim();
+
+    if (!name || !handle) {
+      throw new MedusaError(
+        MedusaError.Types.INVALID_DATA,
+        "Brand name and handle are required.",
+      );
+    }
+
+    const brand = await brandModuleService.createBrands({
+      name,
+      handle,
+    });
 
     return new StepResponse(brand, brand.id);
   },
-  async (id: string, { container }) => {
+  async (id: string | undefined, { container }) => {
+    if (!id) {
+      return;
+    }
+
     const brandModuleService: BrandModuleService =
       container.resolve(BRAND_MODULE);
 
