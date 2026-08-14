@@ -13,6 +13,7 @@
     "medusa"
   ],
   "scripts": {
+    "prebuild": "node ./scripts/clean-medusa-server.js",
     "build": "medusa build",
     "start": "medusa start",
     "dev": "medusa develop",
