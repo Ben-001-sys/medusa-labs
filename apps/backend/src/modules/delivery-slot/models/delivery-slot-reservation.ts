@@ -16,6 +16,14 @@ export const DeliverySlotReservation = model
       .enum(Object.values(DeliverySlotReservationStatus))
       .default(DeliverySlotReservationStatus.ACTIVE),
 
+    order_id: model.text().index().nullable(),
+
+    checkout_started_at: model.dateTime().nullable(),
+
+    checkout_expires_at: model.dateTime().index().nullable(),
+
+    confirmed_at: model.dateTime().nullable(),
+
     expires_at: model.dateTime().index(),
 
     expired_at: model.dateTime().index().nullable(),
