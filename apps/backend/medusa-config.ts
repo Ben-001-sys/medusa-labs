@@ -15,10 +15,11 @@ module.exports = defineConfig({
   },
 
   projectConfig: {
-    workerMode: process.env.MEDUSA_WORKER_MODE as
+  workerMode:
+    (process.env.MEDUSA_WORKER_MODE as
       | "shared"
-      | "worker"
-      | "server",
+      | "server"
+      | "worker") ?? "shared",
     databaseUrl: process.env.DATABASE_URL,
     redisUrl: process.env.REDIS_URL,
     http: {

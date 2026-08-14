@@ -5,6 +5,8 @@ export enum DeliverySlotStatus {
 
 export enum DeliverySlotReservationStatus {
   ACTIVE = "active",
+  CHECKOUT_PENDING = "checkout_pending",
+  CONFIRMED = "confirmed",
   RELEASED = "released",
   EXPIRED = "expired",
 }
