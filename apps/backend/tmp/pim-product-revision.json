@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0",
+  "source": "aim-pim",
+  "event_id": "pim_evt_lab_001",
+  "event_type": "product.upsert",
+  "occurred_at": "2026-06-25T18:00:00.000Z",
+  "product": {
+    "external_id": "pim_prod_lab_001",
+    "revision": 1,
+    "title": "PIM Connector Lab Backpack",
+    "handle": "pim-connector-lab-backpack",
+    "description": "Created through the PIM connector lab."
+  }
+}

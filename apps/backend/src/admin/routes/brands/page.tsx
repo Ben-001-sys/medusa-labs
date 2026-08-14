@@ -17,6 +17,7 @@ import {
 type Brand = {
   id: string;
   name: string;
+  handle: string;
 };
 type BrandsResponse = {
   brands: Brand[];
@@ -28,9 +29,6 @@ const columnHelper = createDataTableColumnHelper<Brand>();
 
 const BrandsPage = () => {
   const queryClient = useQueryClient();
-  const navigateTo = (path: string) => {
-    window.location.assign(path);
-  };
   const [brandToDelete, setBrandToDelete] = useState<Brand | null>(null);
   const columns = [
     columnHelper.accessor("id", {
@@ -39,13 +37,16 @@ const BrandsPage = () => {
     columnHelper.accessor("name", {
       header: "Name",
     }),
+    columnHelper.accessor("handle", {
+      header: "Handle",
+    }),
     columnHelper.display({
       id: "actions",
       header: "Actions",
       cell: ({ row }) => (
         <div className="flex gap-2">
-          <Button size="small" onClick={() => navigateTo(`/brands/edit/${row.original.id}`)}>
-            Edit
+          <Button asChild size="small">
+            <a href={`./edit/${row.original.id}`}>Edit</a>
           </Button>
           <Button size="small" variant="secondary" onClick={() => setBrandToDelete(row.original)}>
             Delete
@@ -129,7 +130,9 @@ const BrandsPage = () => {
       <DataTable instance={table}>
         <DataTable.Toolbar className="flex flex-col items-start justify-between gap-2 md:flex-row md:items-center">
           <Heading>Brands</Heading>
-          <Button onClick={() => navigateTo("/brands/create")}>Create Brand</Button>
+          <Button asChild>
+            <a href="./brands/create">Create Brand</a>
+          </Button>
         </DataTable.Toolbar>
         <DataTable.Table />
         <DataTable.Pagination />

@@ -6,11 +6,13 @@ import { HttpTypes } from "@medusajs/types"
 import { Button } from "@modules/common/components/ui"
 import Divider from "@modules/common/components/divider"
 import OptionSelect from "@modules/products/components/product-actions/option-select"
+import { getSelectedVariantInventoryState } from "./variant-inventory"
 import { isEqual } from "lodash"
 import { useParams, usePathname, useSearchParams } from "next/navigation"
 import { useEffect, useMemo, useRef, useState } from "react"
 import ProductPrice from "../product-price"
 import MobileActions from "./mobile-actions"
+import RestockSubscriptionForm from "../../../../components/restock/restock-subscription-form"
 import { useRouter } from "next/navigation"
 
 type ProductActionsProps = {
@@ -48,16 +50,10 @@ export default function ProductActions({
     }
   }, [product.variants])
 
-  const selectedVariant = useMemo(() => {
-    if (!product.variants || product.variants.length === 0) {
-      return
-    }
-
-    return product.variants.find((v) => {
-      const variantOptions = optionsAsKeymap(v.options)
-      return isEqual(variantOptions, options)
-    })
-  }, [product.variants, options])
+  const { selectedVariant, availableQuantity, isOutOfStock } = useMemo(
+    () => getSelectedVariantInventoryState(product, options),
+    [product, options]
+  )
 
   // update the options when a variant is selected
   const setOptionValue = (optionId: string, value: string) => {
@@ -162,26 +158,33 @@ export default function ProductActions({
 
         <ProductPrice product={product} variant={selectedVariant} />
 
-        <Button
-          onClick={handleAddToCart}
-          disabled={
-            !inStock ||
-            !selectedVariant ||
-            !!disabled ||
-            isAdding ||
-            !isValidVariant
-          }
-          variant="primary"
-          className="w-full h-10"
-          isLoading={isAdding}
-          data-testid="add-product-button"
-        >
-          {!selectedVariant && !options
-            ? "Select variant"
-            : !inStock || !isValidVariant
-            ? "Out of stock"
-            : "Add to cart"}
-        </Button>
+        {selectedVariant && isOutOfStock ? (
+          <RestockSubscriptionForm
+            variantId={selectedVariant.id}
+            className="w-full"
+          />
+        ) : (
+          <Button
+            onClick={handleAddToCart}
+            disabled={
+              !inStock ||
+              !selectedVariant ||
+              !!disabled ||
+              isAdding ||
+              !isValidVariant
+            }
+            variant="primary"
+            className="w-full h-10"
+            isLoading={isAdding}
+            data-testid="add-product-button"
+          >
+            {!selectedVariant && !options
+              ? "Select variant"
+              : !inStock || !isValidVariant
+              ? "Out of stock"
+              : "Add to cart"}
+          </Button>
+        )}
         <MobileActions
           product={product}
           variant={selectedVariant}
@@ -192,6 +195,7 @@ export default function ProductActions({
           isAdding={isAdding}
           show={!inView}
           optionsDisabled={!!disabled || isAdding}
+          outOfStock={selectedVariant && isOutOfStock}
         />
       </div>
     </>

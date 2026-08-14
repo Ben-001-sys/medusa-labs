@@ -5,6 +5,7 @@ import React, { Fragment, useMemo } from "react"
 import useToggleState from "@lib/hooks/use-toggle-state"
 import ChevronDown from "@modules/common/icons/chevron-down"
 import X from "@modules/common/icons/x"
+import RestockSubscriptionForm from "../../../../components/restock/restock-subscription-form"
 
 import { getProductPrice } from "@lib/util/get-product-price"
 import OptionSelect from "./option-select"
@@ -21,6 +22,7 @@ type MobileActionsProps = {
   isAdding?: boolean
   show: boolean
   optionsDisabled: boolean
+  outOfStock?: boolean
 }
 
 const MobileActions: React.FC<MobileActionsProps> = ({
@@ -33,6 +35,7 @@ const MobileActions: React.FC<MobileActionsProps> = ({
   isAdding,
   show,
   optionsDisabled,
+  outOfStock,
 }) => {
   const { state, open, close } = useToggleState()
 
@@ -51,6 +54,7 @@ const MobileActions: React.FC<MobileActionsProps> = ({
   }, [price])
 
   const isSimple = isSimpleProduct(product)
+  const showRestockSubscription = Boolean(variant && outOfStock)
 
   return (
     <>
@@ -98,37 +102,50 @@ const MobileActions: React.FC<MobileActionsProps> = ({
                 <div></div>
               )}
             </div>
-            <div className={clx("grid grid-cols-2 w-full gap-x-4", {
-              "!grid-cols-1": isSimple
-            })}>
-              {!isSimple && <Button
-                onClick={open}
-                variant="secondary"
-                className="w-full"
-                data-testid="mobile-actions-button"
-              >
-                <div className="flex items-center justify-between w-full">
-                  <span>
-                    {variant
-                      ? Object.values(options).join(" / ")
-                      : "Select Options"}
-                  </span>
-                  <ChevronDown />
+            <div
+              className={clx("grid grid-cols-2 w-full gap-x-4", {
+                "!grid-cols-1": !isSimple,
+              })}
+            >
+              {!isSimple && (
+                <Button
+                  onClick={open}
+                  variant="secondary"
+                  className="w-full"
+                  data-testid="mobile-actions-button"
+                >
+                  <div className="flex items-center justify-between w-full">
+                    <span>
+                      {variant
+                        ? Object.values(options).join(" / ")
+                        : "Select Options"}
+                    </span>
+                    <ChevronDown />
+                  </div>
+                </Button>
+              )}
+              {showRestockSubscription ? (
+                <div className="w-full">
+                  <RestockSubscriptionForm
+                    variantId={variant?.id ?? ""}
+                    className="w-full"
+                  />
                 </div>
-              </Button>}
-              <Button
-                onClick={handleAddToCart}
-                disabled={!inStock || !variant}
-                className="w-full"
-                isLoading={isAdding}
-                data-testid="mobile-cart-button"
-              >
-                {!variant
-                  ? "Select variant"
-                  : !inStock
-                  ? "Out of stock"
-                  : "Add to cart"}
-              </Button>
+              ) : (
+                <Button
+                  onClick={handleAddToCart}
+                  disabled={!inStock || !variant}
+                  className="w-full"
+                  isLoading={isAdding}
+                  data-testid="mobile-cart-button"
+                >
+                  {!variant
+                    ? "Select variant"
+                    : !inStock
+                    ? "Out of stock"
+                    : "Add to cart"}
+                </Button>
+              )}
             </div>
           </div>
         </Transition>
