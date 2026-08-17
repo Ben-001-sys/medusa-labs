@@ -1,5 +1,5 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework";
-import { createBrandWorkflow } from "../../../workflows/create-brand";
+import { CreateBrandWorkflow } from "../../../workflows/create-brand";
 import { z } from "@medusajs/framework/zod";
 import { PostAdminCreateBrand } from "./validators";
 
@@ -9,7 +9,7 @@ export const POST = async (
   req: MedusaRequest<PostAdminCreateBrandType>,
   res: MedusaResponse,
 ) => {
-  const { result } = await createBrandWorkflow(req.scope).run({
+  const { result } = await CreateBrandWorkflow(req.scope).run({
     input: req.validatedBody,
   });
 
