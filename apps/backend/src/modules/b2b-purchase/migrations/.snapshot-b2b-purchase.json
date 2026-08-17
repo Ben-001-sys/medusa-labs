@@ -22,8 +22,8 @@
           "enumItems": [],
           "mappedType": "text"
         },
-        "legal_name": {
-          "name": "legal_name",
+        "reference": {
+          "name": "reference",
           "type": "text",
           "unsigned": false,
           "autoincrement": false,
@@ -38,8 +38,8 @@
           "enumItems": [],
           "mappedType": "text"
         },
-        "display_name": {
-          "name": "display_name",
+        "organization_id": {
+          "name": "organization_id",
           "type": "text",
           "unsigned": false,
           "autoincrement": false,
@@ -54,13 +54,93 @@
           "enumItems": [],
           "mappedType": "text"
         },
-        "handle": {
-          "name": "handle",
+        "requester_member_id": {
+          "name": "requester_member_id",
           "type": "text",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "text"
+        },
+        "customer_id": {
+          "name": "customer_id",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "text"
+        },
+        "cart_id": {
+          "name": "cart_id",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "text"
+        },
+        "draft_order_id": {
+          "name": "draft_order_id",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "text"
+        },
+        "order_change_id": {
+          "name": "order_change_id",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "text"
+        },
+        "order_id": {
+          "name": "order_id",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
           "unique": false,
           "length": null,
           "precision": null,
@@ -81,18 +161,21 @@
           "length": null,
           "precision": null,
           "scale": null,
-          "default": "'pending'",
+          "default": "'pending_internal_approval'",
           "comment": null,
           "enumItems": [
-            "pending",
-            "active",
-            "suspended",
-            "archived"
+            "pending_internal_approval",
+            "pending_merchant_quote",
+            "pending_buyer_acceptance",
+            "rejected",
+            "cancelled",
+            "expired",
+            "converted"
           ],
           "mappedType": "enum"
         },
-        "sales_channel_id": {
-          "name": "sales_channel_id",
+        "currency_code": {
+          "name": "currency_code",
           "type": "text",
           "unsigned": false,
           "autoincrement": false,
@@ -107,45 +190,13 @@
           "enumItems": [],
           "mappedType": "text"
         },
-        "customer_group_id": {
-          "name": "customer_group_id",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "unique": false,
-          "length": null,
-          "precision": null,
-          "scale": null,
-          "default": null,
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "text"
-        },
-        "default_region_id": {
-          "name": "default_region_id",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "unique": false,
-          "length": null,
-          "precision": null,
-          "scale": null,
-          "default": null,
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "text"
-        },
-        "approval_threshold": {
-          "name": "approval_threshold",
+        "requested_total": {
+          "name": "requested_total",
           "type": "numeric",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": true,
+          "nullable": false,
           "unique": false,
           "length": null,
           "precision": null,
@@ -155,8 +206,8 @@
           "enumItems": [],
           "mappedType": "decimal"
         },
-        "approval_currency_code": {
-          "name": "approval_currency_code",
+        "purchase_order_number": {
+          "name": "purchase_order_number",
           "type": "text",
           "unsigned": false,
           "autoincrement": false,
@@ -171,61 +222,157 @@
           "enumItems": [],
           "mappedType": "text"
         },
-        "requires_merchant_quote": {
-          "name": "requires_merchant_quote",
-          "type": "boolean",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "unique": false,
-          "length": null,
-          "precision": null,
-          "scale": null,
-          "default": "false",
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "boolean"
-        },
-        "quote_validity_days": {
-          "name": "quote_validity_days",
-          "type": "integer",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "unique": false,
-          "length": null,
-          "precision": null,
-          "scale": null,
-          "default": "7",
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "integer"
-        },
-        "approval_policy_version": {
-          "name": "approval_policy_version",
-          "type": "integer",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "unique": false,
-          "length": null,
-          "precision": null,
-          "scale": null,
-          "default": "1",
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "integer"
-        },
-        "raw_approval_threshold": {
-          "name": "raw_approval_threshold",
+        "cart_snapshot": {
+          "name": "cart_snapshot",
           "type": "jsonb",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "json"
+        },
+        "policy_snapshot": {
+          "name": "policy_snapshot",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "json"
+        },
+        "submitted_at": {
+          "name": "submitted_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": 6,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "datetime"
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
           "nullable": true,
+          "unique": false,
+          "length": 6,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "datetime"
+        },
+        "approved_at": {
+          "name": "approved_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": 6,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "datetime"
+        },
+        "quoted_at": {
+          "name": "quoted_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": 6,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "datetime"
+        },
+        "accepted_at": {
+          "name": "accepted_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": 6,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "datetime"
+        },
+        "rejected_at": {
+          "name": "rejected_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": 6,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "datetime"
+        },
+        "cancelled_at": {
+          "name": "cancelled_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": 6,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "datetime"
+        },
+        "raw_requested_total": {
+          "name": "raw_requested_total",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
           "unique": false,
           "length": null,
           "precision": null,
@@ -284,65 +431,137 @@
           "mappedType": "datetime"
         }
       },
-      "name": "b2b_organization",
+      "name": "b2b_purchase_request",
       "schema": "public",
       "indexes": [
         {
-          "keyName": "IDX_b2b_organization_handle_unique",
+          "keyName": "IDX_b2b_purchase_request_reference_unique",
           "columnNames": [],
           "composite": false,
           "constraint": false,
           "primary": false,
           "unique": false,
-          "expression": "CREATE UNIQUE INDEX IF NOT EXISTS \"IDX_b2b_organization_handle_unique\" ON \"b2b_organization\" (\"handle\") WHERE deleted_at IS NULL"
+          "expression": "CREATE UNIQUE INDEX IF NOT EXISTS \"IDX_b2b_purchase_request_reference_unique\" ON \"b2b_purchase_request\" (\"reference\") WHERE deleted_at IS NULL"
         },
         {
-          "keyName": "IDX_b2b_organization_sales_channel_id",
+          "keyName": "IDX_b2b_purchase_request_organization_id",
           "columnNames": [],
           "composite": false,
           "constraint": false,
           "primary": false,
           "unique": false,
-          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_b2b_organization_sales_channel_id\" ON \"b2b_organization\" (\"sales_channel_id\") WHERE deleted_at IS NULL"
+          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_b2b_purchase_request_organization_id\" ON \"b2b_purchase_request\" (\"organization_id\") WHERE deleted_at IS NULL"
         },
         {
-          "keyName": "IDX_b2b_organization_customer_group_id",
+          "keyName": "IDX_b2b_purchase_request_requester_member_id",
           "columnNames": [],
           "composite": false,
           "constraint": false,
           "primary": false,
           "unique": false,
-          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_b2b_organization_customer_group_id\" ON \"b2b_organization\" (\"customer_group_id\") WHERE deleted_at IS NULL"
+          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_b2b_purchase_request_requester_member_id\" ON \"b2b_purchase_request\" (\"requester_member_id\") WHERE deleted_at IS NULL"
         },
         {
-          "keyName": "IDX_b2b_organization_default_region_id",
+          "keyName": "IDX_b2b_purchase_request_customer_id",
           "columnNames": [],
           "composite": false,
           "constraint": false,
           "primary": false,
           "unique": false,
-          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_b2b_organization_default_region_id\" ON \"b2b_organization\" (\"default_region_id\") WHERE deleted_at IS NULL"
+          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_b2b_purchase_request_customer_id\" ON \"b2b_purchase_request\" (\"customer_id\") WHERE deleted_at IS NULL"
         },
         {
-          "keyName": "IDX_b2b_organization_deleted_at",
+          "keyName": "IDX_b2b_purchase_request_cart_id",
           "columnNames": [],
           "composite": false,
           "constraint": false,
           "primary": false,
           "unique": false,
-          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_b2b_organization_deleted_at\" ON \"b2b_organization\" (\"deleted_at\") WHERE deleted_at IS NULL"
+          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_b2b_purchase_request_cart_id\" ON \"b2b_purchase_request\" (\"cart_id\") WHERE deleted_at IS NULL"
         },
         {
-          "keyName": "IDX_b2b_organization_sales_channel_id_status",
+          "keyName": "IDX_b2b_purchase_request_draft_order_id_unique",
           "columnNames": [],
           "composite": false,
           "constraint": false,
           "primary": false,
           "unique": false,
-          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_b2b_organization_sales_channel_id_status\" ON \"b2b_organization\" (\"sales_channel_id\", \"status\") WHERE deleted_at IS NULL"
+          "expression": "CREATE UNIQUE INDEX IF NOT EXISTS \"IDX_b2b_purchase_request_draft_order_id_unique\" ON \"b2b_purchase_request\" (\"draft_order_id\") WHERE deleted_at IS NULL"
         },
         {
-          "keyName": "b2b_organization_pkey",
+          "keyName": "IDX_b2b_purchase_request_order_change_id_unique",
+          "columnNames": [],
+          "composite": false,
+          "constraint": false,
+          "primary": false,
+          "unique": false,
+          "expression": "CREATE UNIQUE INDEX IF NOT EXISTS \"IDX_b2b_purchase_request_order_change_id_unique\" ON \"b2b_purchase_request\" (\"order_change_id\") WHERE deleted_at IS NULL"
+        },
+        {
+          "keyName": "IDX_b2b_purchase_request_order_id_unique",
+          "columnNames": [],
+          "composite": false,
+          "constraint": false,
+          "primary": false,
+          "unique": false,
+          "expression": "CREATE UNIQUE INDEX IF NOT EXISTS \"IDX_b2b_purchase_request_order_id_unique\" ON \"b2b_purchase_request\" (\"order_id\") WHERE deleted_at IS NULL"
+        },
+        {
+          "keyName": "IDX_b2b_purchase_request_submitted_at",
+          "columnNames": [],
+          "composite": false,
+          "constraint": false,
+          "primary": false,
+          "unique": false,
+          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_b2b_purchase_request_submitted_at\" ON \"b2b_purchase_request\" (\"submitted_at\") WHERE deleted_at IS NULL"
+        },
+        {
+          "keyName": "IDX_b2b_purchase_request_expires_at_unique",
+          "columnNames": [],
+          "composite": false,
+          "constraint": false,
+          "primary": false,
+          "unique": false,
+          "expression": "CREATE UNIQUE INDEX IF NOT EXISTS \"IDX_b2b_purchase_request_expires_at_unique\" ON \"b2b_purchase_request\" (\"expires_at\") WHERE deleted_at IS NULL"
+        },
+        {
+          "keyName": "IDX_b2b_purchase_request_deleted_at",
+          "columnNames": [],
+          "composite": false,
+          "constraint": false,
+          "primary": false,
+          "unique": false,
+          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_b2b_purchase_request_deleted_at\" ON \"b2b_purchase_request\" (\"deleted_at\") WHERE deleted_at IS NULL"
+        },
+        {
+          "keyName": "IDX_b2b_purchase_request_organization_id_status",
+          "columnNames": [],
+          "composite": false,
+          "constraint": false,
+          "primary": false,
+          "unique": false,
+          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_b2b_purchase_request_organization_id_status\" ON \"b2b_purchase_request\" (\"organization_id\", \"status\") WHERE deleted_at IS NULL"
+        },
+        {
+          "keyName": "IDX_b2b_purchase_request_customer_id_status",
+          "columnNames": [],
+          "composite": false,
+          "constraint": false,
+          "primary": false,
+          "unique": false,
+          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_b2b_purchase_request_customer_id_status\" ON \"b2b_purchase_request\" (\"customer_id\", \"status\") WHERE deleted_at IS NULL"
+        },
+        {
+          "keyName": "IDX_b2b_purchase_request_status_expires_at",
+          "columnNames": [],
+          "composite": false,
+          "constraint": false,
+          "primary": false,
+          "unique": false,
+          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_b2b_purchase_request_status_expires_at\" ON \"b2b_purchase_request\" (\"status\", \"expires_at\") WHERE deleted_at IS NULL"
+        },
+        {
+          "keyName": "b2b_purchase_request_pkey",
           "columnNames": [
             "id"
           ],
@@ -374,8 +593,8 @@
           "enumItems": [],
           "mappedType": "text"
         },
-        "customer_id": {
-          "name": "customer_id",
+        "approver_member_id": {
+          "name": "approver_member_id",
           "type": "text",
           "unsigned": false,
           "autoincrement": false,
@@ -390,8 +609,8 @@
           "enumItems": [],
           "mappedType": "text"
         },
-        "role": {
-          "name": "role",
+        "decision": {
+          "name": "decision",
           "type": "text",
           "unsigned": false,
           "autoincrement": false,
@@ -401,40 +620,48 @@
           "length": null,
           "precision": null,
           "scale": null,
-          "default": "'buyer'",
+          "default": null,
           "comment": null,
           "enumItems": [
-            "owner",
-            "buyer",
-            "approver",
-            "finance",
-            "viewer"
+            "approved",
+            "rejected"
           ],
           "mappedType": "enum"
         },
-        "status": {
-          "name": "status",
+        "note": {
+          "name": "note",
           "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "text"
+        },
+        "decided_at": {
+          "name": "decided_at",
+          "type": "timestamptz",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
           "unique": false,
-          "length": null,
+          "length": 6,
           "precision": null,
           "scale": null,
-          "default": "'invited'",
+          "default": null,
           "comment": null,
-          "enumItems": [
-            "invited",
-            "active",
-            "suspended",
-            "removed"
-          ],
-          "mappedType": "enum"
+          "enumItems": [],
+          "mappedType": "datetime"
         },
-        "organization_id": {
-          "name": "organization_id",
+        "purchase_request_id": {
+          "name": "purchase_request_id",
           "type": "text",
           "unsigned": false,
           "autoincrement": false,
@@ -498,56 +725,56 @@
           "mappedType": "datetime"
         }
       },
-      "name": "b2b_organization_member",
+      "name": "b2b_purchase_approval",
       "schema": "public",
       "indexes": [
         {
-          "keyName": "IDX_b2b_organization_member_customer_id",
+          "keyName": "IDX_b2b_purchase_approval_approver_member_id",
           "columnNames": [],
           "composite": false,
           "constraint": false,
           "primary": false,
           "unique": false,
-          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_b2b_organization_member_customer_id\" ON \"b2b_organization_member\" (\"customer_id\") WHERE deleted_at IS NULL"
+          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_b2b_purchase_approval_approver_member_id\" ON \"b2b_purchase_approval\" (\"approver_member_id\") WHERE deleted_at IS NULL"
         },
         {
-          "keyName": "IDX_b2b_organization_member_organization_id",
+          "keyName": "IDX_b2b_purchase_approval_decided_at",
           "columnNames": [],
           "composite": false,
           "constraint": false,
           "primary": false,
           "unique": false,
-          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_b2b_organization_member_organization_id\" ON \"b2b_organization_member\" (\"organization_id\") WHERE deleted_at IS NULL"
+          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_b2b_purchase_approval_decided_at\" ON \"b2b_purchase_approval\" (\"decided_at\") WHERE deleted_at IS NULL"
         },
         {
-          "keyName": "IDX_b2b_organization_member_deleted_at",
+          "keyName": "IDX_b2b_purchase_approval_purchase_request_id",
           "columnNames": [],
           "composite": false,
           "constraint": false,
           "primary": false,
           "unique": false,
-          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_b2b_organization_member_deleted_at\" ON \"b2b_organization_member\" (\"deleted_at\") WHERE deleted_at IS NULL"
+          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_b2b_purchase_approval_purchase_request_id\" ON \"b2b_purchase_approval\" (\"purchase_request_id\") WHERE deleted_at IS NULL"
         },
         {
-          "keyName": "IDX_b2b_organization_member_organization_id_customer_id_unique",
+          "keyName": "IDX_b2b_purchase_approval_deleted_at",
           "columnNames": [],
           "composite": false,
           "constraint": false,
           "primary": false,
           "unique": false,
-          "expression": "CREATE UNIQUE INDEX IF NOT EXISTS \"IDX_b2b_organization_member_organization_id_customer_id_unique\" ON \"b2b_organization_member\" (\"organization_id\", \"customer_id\") WHERE deleted_at IS NULL"
+          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_b2b_purchase_approval_deleted_at\" ON \"b2b_purchase_approval\" (\"deleted_at\") WHERE deleted_at IS NULL"
         },
         {
-          "keyName": "IDX_b2b_organization_member_customer_id_status",
+          "keyName": "IDX_b2b_purchase_approval_purchase_request_id_approver_member_id_unique",
           "columnNames": [],
           "composite": false,
           "constraint": false,
           "primary": false,
           "unique": false,
-          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_b2b_organization_member_customer_id_status\" ON \"b2b_organization_member\" (\"customer_id\", \"status\") WHERE deleted_at IS NULL"
+          "expression": "CREATE UNIQUE INDEX IF NOT EXISTS \"IDX_b2b_purchase_approval_purchase_request_id_approver_member_id_unique\" ON \"b2b_purchase_approval\" (\"purchase_request_id\", \"approver_member_id\") WHERE deleted_at IS NULL"
         },
         {
-          "keyName": "b2b_organization_member_pkey",
+          "keyName": "b2b_purchase_approval_pkey",
           "columnNames": [
             "id"
           ],
@@ -559,244 +786,16 @@
       ],
       "checks": [],
       "foreignKeys": {
-        "b2b_organization_member_organization_id_foreign": {
-          "constraintName": "b2b_organization_member_organization_id_foreign",
+        "b2b_purchase_approval_purchase_request_id_foreign": {
+          "constraintName": "b2b_purchase_approval_purchase_request_id_foreign",
           "columnNames": [
-            "organization_id"
+            "purchase_request_id"
           ],
-          "localTableName": "public.b2b_organization_member",
+          "localTableName": "public.b2b_purchase_approval",
           "referencedColumnNames": [
             "id"
           ],
-          "referencedTableName": "public.b2b_organization",
-          "updateRule": "cascade"
-        }
-      },
-      "nativeEnums": {}
-    },
-    {
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": true,
-          "nullable": false,
-          "unique": false,
-          "length": null,
-          "precision": null,
-          "scale": null,
-          "default": null,
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "text"
-        },
-        "cart_id": {
-          "name": "cart_id",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "unique": false,
-          "length": null,
-          "precision": null,
-          "scale": null,
-          "default": null,
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "text"
-        },
-        "customer_id": {
-          "name": "customer_id",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "unique": false,
-          "length": null,
-          "precision": null,
-          "scale": null,
-          "default": null,
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "text"
-        },
-        "organization_id": {
-          "name": "organization_id",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "unique": false,
-          "length": null,
-          "precision": null,
-          "scale": null,
-          "default": null,
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "text"
-        },
-        "member_id": {
-          "name": "member_id",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "unique": false,
-          "length": null,
-          "precision": null,
-          "scale": null,
-          "default": null,
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "text"
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamptz",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "unique": false,
-          "length": 6,
-          "precision": null,
-          "scale": null,
-          "default": "now()",
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "datetime"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamptz",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "unique": false,
-          "length": 6,
-          "precision": null,
-          "scale": null,
-          "default": "now()",
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "datetime"
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "timestamptz",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "unique": false,
-          "length": 6,
-          "precision": null,
-          "scale": null,
-          "default": null,
-          "comment": null,
-          "enumItems": [],
-          "mappedType": "datetime"
-        }
-      },
-      "name": "b2b_cart_context",
-      "schema": "public",
-      "indexes": [
-        {
-          "keyName": "IDX_b2b_cart_context_cart_id_unique",
-          "columnNames": [],
-          "composite": false,
-          "constraint": false,
-          "primary": false,
-          "unique": false,
-          "expression": "CREATE UNIQUE INDEX IF NOT EXISTS \"IDX_b2b_cart_context_cart_id_unique\" ON \"b2b_cart_context\" (\"cart_id\") WHERE deleted_at IS NULL"
-        },
-        {
-          "keyName": "IDX_b2b_cart_context_customer_id",
-          "columnNames": [],
-          "composite": false,
-          "constraint": false,
-          "primary": false,
-          "unique": false,
-          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_b2b_cart_context_customer_id\" ON \"b2b_cart_context\" (\"customer_id\") WHERE deleted_at IS NULL"
-        },
-        {
-          "keyName": "IDX_b2b_cart_context_organization_id",
-          "columnNames": [],
-          "composite": false,
-          "constraint": false,
-          "primary": false,
-          "unique": false,
-          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_b2b_cart_context_organization_id\" ON \"b2b_cart_context\" (\"organization_id\") WHERE deleted_at IS NULL"
-        },
-        {
-          "keyName": "IDX_b2b_cart_context_member_id",
-          "columnNames": [],
-          "composite": false,
-          "constraint": false,
-          "primary": false,
-          "unique": false,
-          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_b2b_cart_context_member_id\" ON \"b2b_cart_context\" (\"member_id\") WHERE deleted_at IS NULL"
-        },
-        {
-          "keyName": "IDX_b2b_cart_context_deleted_at",
-          "columnNames": [],
-          "composite": false,
-          "constraint": false,
-          "primary": false,
-          "unique": false,
-          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_b2b_cart_context_deleted_at\" ON \"b2b_cart_context\" (\"deleted_at\") WHERE deleted_at IS NULL"
-        },
-        {
-          "keyName": "IDX_b2b_cart_context_organization_id_customer_id",
-          "columnNames": [],
-          "composite": false,
-          "constraint": false,
-          "primary": false,
-          "unique": false,
-          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_b2b_cart_context_organization_id_customer_id\" ON \"b2b_cart_context\" (\"organization_id\", \"customer_id\") WHERE deleted_at IS NULL"
-        },
-        {
-          "keyName": "b2b_cart_context_pkey",
-          "columnNames": [
-            "id"
-          ],
-          "composite": false,
-          "constraint": true,
-          "primary": true,
-          "unique": true
-        }
-      ],
-      "checks": [],
-      "foreignKeys": {
-        "b2b_cart_context_organization_id_foreign": {
-          "constraintName": "b2b_cart_context_organization_id_foreign",
-          "columnNames": [
-            "organization_id"
-          ],
-          "localTableName": "public.b2b_cart_context",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.b2b_organization",
-          "updateRule": "cascade"
-        },
-        "b2b_cart_context_member_id_foreign": {
-          "constraintName": "b2b_cart_context_member_id_foreign",
-          "columnNames": [
-            "member_id"
-          ],
-          "localTableName": "public.b2b_cart_context",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.b2b_organization_member",
+          "referencedTableName": "public.b2b_purchase_request",
           "updateRule": "cascade"
         }
       },

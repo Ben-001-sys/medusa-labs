@@ -26,6 +26,16 @@ export const B2BOrganization = model
 
     default_region_id: model.text().index().nullable(),
 
+    approval_threshold: model.bigNumber().nullable(),
+
+    approval_currency_code: model.text().nullable(),
+
+    requires_merchant_quote: model.boolean().default(false),
+
+    quote_validity_days: model.number().default(7),
+
+    approval_policy_version: model.number().default(1),
+
     members: model.hasMany(() => B2BOrganizationMember, {
       mappedBy: "organization",
     }),

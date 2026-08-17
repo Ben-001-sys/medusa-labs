@@ -92,6 +92,9 @@ module.exports = defineConfig({
     {
       resolve: "./src/modules/restock",
     },
+    {
+      resolve: "./src/modules/b2b-purchase",
+    },
   ],
   // featureFlags: {
   //   caching: true,
