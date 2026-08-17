@@ -21,6 +21,7 @@ import {
 import {
   PostSelectB2BOrganization,
 } from "./store/customers/me/b2b/carts/[id]/organization/validators"
+import { PostFinanceDecision } from "./admin/b2b/finance-reviews/[id]/decision/validators";
 
 export const GetBrandsSchema = createFindParams()
 
@@ -95,6 +96,13 @@ export default defineMiddlewares({
         validateAndTransformBody(
           PostSelectB2BOrganization
         ),
+      ],
+    },
+    {
+      matcher: "/admin/b2b/finance-reviews/:id/decision",
+      method: ["POST"],
+      middlewares: [
+        validateAndTransformBody(PostFinanceDecision),
       ],
     },
   ],
