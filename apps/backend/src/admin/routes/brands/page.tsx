@@ -48,7 +48,11 @@ const BrandsPage = () => {
           <Button asChild size="small">
             <a href={`./edit/${row.original.id}`}>Edit</a>
           </Button>
-          <Button size="small" variant="secondary" onClick={() => setBrandToDelete(row.original)}>
+          <Button
+            size="small"
+            variant="secondary"
+            onClick={() => setBrandToDelete(row.original)}
+          >
             Delete
           </Button>
         </div>
@@ -86,7 +90,8 @@ const BrandsPage = () => {
       toast.success("Brand deleted successfully");
     },
     onError: (error) => {
-      const message = error instanceof Error ? error.message : "Unable to delete brand";
+      const message =
+        error instanceof Error ? error.message : "Unable to delete brand";
       toast.error(message);
     },
   });
@@ -108,7 +113,9 @@ const BrandsPage = () => {
       {brandToDelete ? (
         <div className="border-b p-6">
           <Heading level="h2">Delete brand?</Heading>
-          <p className="mt-2">Are you sure you want to delete {brandToDelete.name}?</p>
+          <p className="mt-2">
+            Are you sure you want to delete {brandToDelete.name}?
+          </p>
           <div className="mt-4 flex gap-2">
             <Button
               variant="secondary"

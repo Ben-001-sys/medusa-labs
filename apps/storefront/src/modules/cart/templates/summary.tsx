@@ -6,6 +6,7 @@ import CartTotals from "@modules/common/components/cart-totals"
 import Divider from "@modules/common/components/divider"
 import DiscountCode from "@modules/checkout/components/discount-code"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import SubmitPurchaseRequest from "@modules/b2b/components/SubmitPurchaseRequest.client"
 import { HttpTypes } from "@medusajs/types"
 
 type SummaryProps = {
@@ -39,6 +40,10 @@ const Summary = ({ cart }: SummaryProps) => {
       >
         <Button className="w-full h-10">Go to checkout</Button>
       </LocalizedClientLink>
+
+      <div className="mt-3">
+        <SubmitPurchaseRequest cart={cart} />
+      </div>
     </div>
   )
 }

@@ -98,6 +98,9 @@ module.exports = defineConfig({
     {
       resolve: "./src/modules/b2b-finance",
     },
+    {
+      resolve: "./src/modules/b2b-audit",
+    },
   ],
   // featureFlags: {
   //   caching: true,
