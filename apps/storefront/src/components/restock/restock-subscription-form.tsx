@@ -80,7 +80,7 @@ export default function RestockSubscriptionForm({
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    if (mutation.isLoading || mutation.isSuccess) {
+    if ((mutation as any).isPending || mutation.isSuccess) {
       return
     }
 
@@ -152,7 +152,7 @@ export default function RestockSubscriptionForm({
                 placeholder="you@example.com"
                 autoComplete="email"
                 required
-                disabled={mutation.isLoading}
+                disabled={(mutation as any).isPending}
                 className="dark:border-neutral-700 dark:bg-slate-950 dark:text-white dark:placeholder:text-gray-400"
               />
             </div>
@@ -161,8 +161,8 @@ export default function RestockSubscriptionForm({
           <Button
             type="submit"
             className="w-full"
-            isLoading={mutation.isLoading}
-            disabled={mutation.isLoading || mutation.isSuccess}
+            isLoading={(mutation as any).isPending}
+            disabled={(mutation as any).isPending || mutation.isSuccess}
             data-testid="restock-subscribe-button"
           >
             {mutation.isSuccess ? "Subscribed" : submitLabel}

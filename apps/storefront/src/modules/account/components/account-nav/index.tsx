@@ -150,6 +150,24 @@ const AccountNav = ({
                   Orders
                 </AccountNavLink>
               </li>
+              <li>
+                <AccountNavLink
+                  href="/account/organizations"
+                  route={route!}
+                  data-testid="organizations-link"
+                >
+                  Organizations
+                </AccountNavLink>
+              </li>
+              <li>
+                <AccountNavLink
+                  href="/account/purchase-requests"
+                  route={route!}
+                  data-testid="purchase-requests-link"
+                >
+                  Purchase requests
+                </AccountNavLink>
+              </li>
               <li className="text-grey-700">
                 <button
                   type="button"

@@ -3,36 +3,31 @@ import {
   validateAndTransformBody,
   validateAndTransformQuery,
   authenticate,
-  MedusaRequest, 
+  MedusaRequest,
   MedusaResponse,
   MedusaNextFunction,
 } from "@medusajs/framework/http";
-import { z } from "@medusajs/framework/zod"
-import { createFindParams } from "@medusajs/medusa/api/utils/validators"
+import { z } from "@medusajs/framework/zod";
+import { createFindParams } from "@medusajs/medusa/api/utils/validators";
 import { Modules } from "@medusajs/framework/utils";
-import { PostAdminCreateBrand, PutAdminUpdateBrand } from "./admin/brands/validators";
+import {
+  PostAdminCreateBrand,
+  PutAdminUpdateBrand,
+} from "./admin/brands/validators";
 import { PostSelectDeliverySlot } from "./store/customers/me/carts/[id]/delivery-slot/validators";
-import {
-  PimProductRevisionSchema,
-} from "../modules/pim-connector/contracts"
-import { 
-  PostStoreCreateRestockSubscription,
-} from "./store/restock-subscriptions/validators"
-import {
-  PostSelectB2BOrganization,
-} from "./store/customers/me/b2b/carts/[id]/organization/validators"
+import { PimProductRevisionSchema } from "../modules/pim-connector/contracts";
+import { PostStoreCreateRestockSubscription } from "./store/restock-subscriptions/validators";
+import { PostSelectB2BOrganization } from "./store/customers/me/b2b/carts/[id]/organization/validators";
 import { PostFinanceDecision } from "./admin/b2b/finance-reviews/[id]/decision/validators";
 
-export const GetBrandsSchema = createFindParams()
+export const GetBrandsSchema = createFindParams();
 
 export default defineMiddlewares({
   routes: [
     {
       matcher: "/admin/brands",
       method: "POST",
-      middlewares: [
-        validateAndTransformBody(PostAdminCreateBrand),
-      ],
+      middlewares: [validateAndTransformBody(PostAdminCreateBrand)],
     },
     {
       matcher: "/admin/brands/:id",
@@ -50,33 +45,26 @@ export default defineMiddlewares({
       matcher: "/admin/brands",
       method: "GET",
       middlewares: [
-        validateAndTransformQuery(
-          GetBrandsSchema,
-          {
-            defaults: [
-              "id",
-              "name",
-              "handle",
-              "products.*",
-            ],
-            isList: true,
-          }
-        ),
+        validateAndTransformQuery(GetBrandsSchema, {
+          defaults: ["id", "name", "handle", "products.*"],
+          isList: true,
+        }),
       ],
     },
     {
       matcher: "/store/customers/me/carts/:id/delivery-slot",
       methods: ["POST"],
-      middlewares: [
-        validateAndTransformBody(PostSelectDeliverySlot),
-      ],
+      middlewares: [validateAndTransformBody(PostSelectDeliverySlot)],
+    },
+    {
+      matcher: "/store/customers/me/b2b/organizations",
+      method: "GET",
+      middlewares: [authenticate("customer", ["bearer", "session"])],
     },
     {
       matcher: "/integrations/pim/product-revisions",
       method: ["POST"],
-      middlewares: [
-        validateAndTransformBody(PimProductRevisionSchema),
-      ],
+      middlewares: [validateAndTransformBody(PimProductRevisionSchema)],
     },
     {
       matcher: "/store/restock-subscriptions",
@@ -89,21 +77,14 @@ export default defineMiddlewares({
       ],
     },
     {
-      matcher:
-        "/store/customers/me/b2b/carts/:id/organization",
+      matcher: "/store/customers/me/b2b/carts/:id/organization",
       method: ["POST"],
-      middlewares: [
-        validateAndTransformBody(
-          PostSelectB2BOrganization
-        ),
-      ],
+      middlewares: [validateAndTransformBody(PostSelectB2BOrganization)],
     },
     {
       matcher: "/admin/b2b/finance-reviews/:id/decision",
       method: ["POST"],
-      middlewares: [
-        validateAndTransformBody(PostFinanceDecision),
-      ],
+      middlewares: [validateAndTransformBody(PostFinanceDecision)],
     },
   ],
 });
