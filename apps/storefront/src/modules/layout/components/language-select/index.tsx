@@ -73,6 +73,11 @@ const LanguageSelect = ({
   locales,
   currentLocale,
 }: LanguageSelectProps) => {
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
   const [current, setCurrent] = useState<LanguageOption | undefined>(undefined)
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
@@ -103,6 +108,10 @@ const LanguageSelect = ({
       setCurrent(DEFAULT_OPTION)
     }
   }, [options, currentLocale])
+
+  if (!mounted) {
+    return null
+  }
 
   const handleChange = (option: LanguageOption) => {
     startTransition(async () => {
@@ -157,7 +166,6 @@ const LanguageSelect = ({
           >
             <ListboxOptions
               className="absolute -bottom-[calc(100%-36px)] left-0 xsmall:left-auto xsmall:right-0 max-h-[442px] overflow-y-scroll z-[900] bg-white drop-shadow-md text-small-regular uppercase text-black no-scrollbar rounded-rounded w-full"
-              static
             >
               {options.map((o) => (
                 <ListboxOption
